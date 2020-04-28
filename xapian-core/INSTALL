@@ -183,11 +183,8 @@ Then build using GNU make::
 
   make
 
-MSYS2 64-bit Mingw-64 
+MSYS2 64-bit Mingw-64
 ---------------------
-
-Install MSYS2-64 bit from here - 
-https://www.msys2.org/
 
 Open msys2 Terminal and run the following commands - 
 
