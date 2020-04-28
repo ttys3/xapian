@@ -812,10 +812,10 @@ if test no != "$with_java" ; then
 	  fi
 	  AC_MSG_RESULT([found, but not usable])
 
-    CPPFLAGS="$SAVE_CPPFLAGS -I$jnidir"
-  else
-    AC_MSG_RESULT([no])
-  fi
+	  CPPFLAGS="$SAVE_CPPFLAGS -I$jnidir"
+	else
+	  AC_MSG_RESULT([no])
+	fi
       done
       CPPFLAGS=$SAVE_CPPFLAGS
       test noyes = $java_ok$with_java && AC_MSG_ERROR([jni.h not found])
@@ -851,21 +851,21 @@ dnl	  fi
 	  java_ok=no
 	fi
       else
-  AC_MSG_RESULT([failed to compile test program])
-  java_ok=no
+	AC_MSG_RESULT([failed to compile test program])
+	java_ok=no
       fi
       if test no = "$java_ok" ; then
-  test yes = "$with_java" && AC_MSG_ERROR([Couldn't compile and run a simple Java test program])
+	test yes = "$with_java" && AC_MSG_ERROR([Couldn't compile and run a simple Java test program])
       fi
     fi
   else
     if test yes = "$with_java" ; then
       if test -z "$JAVA" ; then
-  AC_MSG_ERROR([java not found])
+	AC_MSG_ERROR([java not found])
       elif test -z "$JAVAC" ; then
-  AC_MSG_ERROR([javac not found])
+	AC_MSG_ERROR([javac not found])
       elif test -z "$JAR" ; then
-  AC_MSG_ERROR([jar not found])
+	AC_MSG_ERROR([jar not found])
       fi
     fi
   fi
@@ -889,14 +889,14 @@ if test no != "$with_ruby" ; then
     "")
       AC_MSG_RESULT([\$RUBY -e 'print RUBY_VERSION' didn't work])
       if test yes = "$with_ruby" ; then
-  AC_MSG_ERROR([Working Ruby interpreter not found])
+	AC_MSG_ERROR([Working Ruby interpreter not found])
       fi
       RUBY=
       ;;
     [[01].*|2.0.*])
       AC_MSG_RESULT([$version (too old)])
       if test yes = "$with_ruby" ; then
-  AC_MSG_ERROR([Only Ruby 2.1 or newer is supported ($RUBY is $version)])
+	AC_MSG_ERROR([Only Ruby 2.1 or newer is supported ($RUBY is $version)])
       fi
       RUBY=
       ;;
@@ -905,8 +905,8 @@ if test no != "$with_ruby" ; then
       AC_MSG_RESULT([$version])
       AC_ARG_VAR(RUBY_INC, [Directory where ruby.h can be found])
       if test -z "$RUBY_INC" ; then
-  dnl Ruby 1.9 added rubyhdrdir.
-  [RUBY_INC=`$RUBY -rrbconfig -e 'print RbConfig::CONFIG["rubyhdrdir"]'`]
+	dnl Ruby 1.9 added rubyhdrdir.
+	[RUBY_INC=`$RUBY -rrbconfig -e 'print RbConfig::CONFIG["rubyhdrdir"]'`]
       fi
       AC_SUBST(RUBY_INC)
       dnl Check that ruby.h is there, which is a good way to check that
@@ -957,10 +957,10 @@ if test no != "$with_ruby" ; then
 	fi
 	AC_ARG_VAR([RDOC], [Ruby documentation generator])
       else
-  AC_MSG_RESULT([no (install ruby-dev or ruby-devel package or similar)])
-  if test yes = "$with_ruby" ; then
-    AC_MSG_ERROR([ruby.h not found])
-  fi
+	AC_MSG_RESULT([no (install ruby-dev or ruby-devel package or similar)])
+	if test yes = "$with_ruby" ; then
+	  AC_MSG_ERROR([ruby.h not found])
+	fi
       fi
       RUBY_DLEXT=`$RUBY -rrbconfig -e 'print RbConfig::CONFIG[["DLEXT"]]'`
       AC_SUBST(RUBY_DLEXT)
@@ -999,9 +999,9 @@ if test no != "$with_perl" ; then
       dnl snapshot versions look like 1.2.3_git123
       case $PACKAGE_VERSION in
       *_git*)
-  PERL_XAPIAN_VERSION=`echo "$PACKAGE_VERSION"|sed 's/_git/./'` ;;
+	PERL_XAPIAN_VERSION=`echo "$PACKAGE_VERSION"|sed 's/_git/./'` ;;
       *)
-  PERL_XAPIAN_VERSION=$PACKAGE_VERSION.0 ;;
+	PERL_XAPIAN_VERSION=$PACKAGE_VERSION.0 ;;
       esac
     fi
     AC_SUBST(PERL_XAPIAN_VERSION)
@@ -1026,48 +1026,48 @@ if test no != "$with_lua" ; then
       AC_ARG_VAR([LUA_SO], [Extension for compiled Lua modules (e.g. LUA_SO=.so)])
       AC_MSG_CHECKING([for directory to install compiled Lua modules into])
       if test -z "$LUA_LIB" -o -z "$LUA_SO" ; then
-  lua_cpath=`$LUA -e 'require("package") print(package.cpath)'`
-  dnl Look for the first absolute path in lua_cpath which has leaf
-  dnl "?.<ext>" and put the directory part into lua_lib and <ext> into
-  dnl lua_so.  If LUA_SO was specified by the user, only consider
-  dnl entries where <ext> matches LUA_SO.
-  lua_lib=
-  lua_so=
-  case $LUA_SO in
-    "")
-     [lua_so_pat='[a-zA-Z][a-zA-Z]*'] ;;
-    .*)
-      dnl If LUA_SO has a leading '.', remove it.
-      lua_so_pat=`AS_ECHO("$LUA_SO")|sed 's/^\.//'` ;;
-    *)
-      dnl If LUA_SO was specified without a leading '.', add one to the
-      dnl value substituted into Makefile.in.
-      lua_so_pat=$LUA_SO
-      LUA_SO=.$LUA_SO
-      ;;
-  esac
-  while test x"$lua_cpath" != x ; do
-    [lua_lib=`expr X"$lua_cpath" : X'\([^;]*\)'`]
-    lua_so=.`expr X"$lua_lib" : X'/.*/?\.\('"$lua_so_pat"'\)$'`
-    case $lua_so in
-      .|.lua)
-        dnl If someone has foolishly put ?.lua in cpath, ignore them.
-        lua_lib=
-        ;;
-      *)
-        lua_lib=`expr X"$lua_lib" : X'\(/.*\)/?\.'"$lua_so_pat"'$'`
-        break ;;
-    esac
-    [lua_cpath=`expr X"$lua_cpath" : X'[^;]*;*\(.*\)'`]
-  done
-  test -n "$LUA_LIB" || LUA_LIB=$lua_lib
-  test -n "$LUA_SO" || LUA_SO=$lua_so
+	lua_cpath=`$LUA -e 'require("package") print(package.cpath)'`
+	dnl Look for the first absolute path in lua_cpath which has leaf
+	dnl "?.<ext>" and put the directory part into lua_lib and <ext> into
+	dnl lua_so.  If LUA_SO was specified by the user, only consider
+	dnl entries where <ext> matches LUA_SO.
+	lua_lib=
+	lua_so=
+	case $LUA_SO in
+	  "")
+	   [lua_so_pat='[a-zA-Z][a-zA-Z]*'] ;;
+	  .*)
+	    dnl If LUA_SO has a leading '.', remove it.
+	    lua_so_pat=`AS_ECHO("$LUA_SO")|sed 's/^\.//'` ;;
+	  *)
+	    dnl If LUA_SO was specified without a leading '.', add one to the
+	    dnl value substituted into Makefile.in.
+	    lua_so_pat=$LUA_SO
+	    LUA_SO=.$LUA_SO
+	    ;;
+	esac
+	while test x"$lua_cpath" != x ; do
+	  [lua_lib=`expr X"$lua_cpath" : X'\([^;]*\)'`]
+	  lua_so=.`expr X"$lua_lib" : X'/.*/?\.\('"$lua_so_pat"'\)$'`
+	  case $lua_so in
+	    .|.lua)
+	      dnl If someone has foolishly put ?.lua in cpath, ignore them.
+	      lua_lib=
+	      ;;
+	    *)
+	      lua_lib=`expr X"$lua_lib" : X'\(/.*\)/?\.'"$lua_so_pat"'$'`
+	      break ;;
+	  esac
+	  [lua_cpath=`expr X"$lua_cpath" : X'[^;]*;*\(.*\)'`]
+	done
+	test -n "$LUA_LIB" || LUA_LIB=$lua_lib
+	test -n "$LUA_SO" || LUA_SO=$lua_so
       fi
       if test -z "$LUA_LIB"; then
 	AC_MSG_RESULT([not found])
 	LUA=
       else
-  AC_MSG_RESULT([$LUA_LIB])
+	AC_MSG_RESULT([$LUA_LIB])
       fi
       AC_SUBST([LUA_LIB])
 
@@ -1076,7 +1076,7 @@ if test no != "$with_lua" ; then
 	AC_MSG_RESULT([not found])
 	LUA=
       else
-  AC_MSG_RESULT([$LUA_SO])
+	AC_MSG_RESULT([$LUA_SO])
       fi
       AC_SUBST([LUA_SO])
     fi
@@ -1099,8 +1099,6 @@ if test no != "$with_go" ; then
     AC_SUBST(GOPATH)
     GO_CORE="without-core"
     if $XAPIAN_CONFIG --libs >/dev/null 2>/dev/null ; then
-      :
-    else
       GO_CORE="with-core"
       GO_CXX=`$XAPIAN_CONFIG --cxxflags`
       GO_LIB=`$XAPIAN_CONFIG --libs`
@@ -1126,9 +1124,9 @@ if test no != "$with_go" ; then
   USE_CLANG_LIB=`echo ${CXX} | grep stdlib`
   AC_MSG_RESULT([${USE_CLANG_LIB}])
   if test -n "${USE_CLANG_LIB}" ; then
-      AC_MSG_RESULT([${USE_CLANG_LIB}])
-      AC_SUBST(USE_CLANG_GO_LIB,'-lc++')
-      AC_MSG_RESULT([${USE_CLANG_GO_LIB}])
+    AC_MSG_RESULT([${USE_CLANG_LIB}])
+    AC_SUBST(USE_CLANG_GO_LIB,'-lc++')
+    AC_MSG_RESULT([${USE_CLANG_GO_LIB}])
   fi
   BINDINGS="$BINDINGS go"
   if test -z "$GO" ; then
