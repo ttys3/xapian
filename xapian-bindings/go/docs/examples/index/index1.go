@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 
 	"xapian.org/xapian"
 )
@@ -14,6 +15,7 @@ type Movie struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Year        int    `json:"year"`
 }
 
 func main() {
@@ -45,10 +47,12 @@ func main() {
 			break
 		}
 		// considering id ,tilte and description only
+		year, _ := strconv.Atoi(fields[2])
 		movie := &Movie{
 			ID:          fields[0],
 			Title:       fields[1],
-			Description: fields[2],
+			Year:        year,
+			Description: fields[3],
 		}
 		fmt.Println("movie=", movie)
 
@@ -76,6 +80,9 @@ func main() {
 
 		// It is exactly the same as add_term(term, 0)
 		doc.Add_boolean_term(idterm)
+
+		doc.Add_value(1, xapian.Sortable_serialise(float64(movie.Year)))
+		doc.Add_value(2, strconv.Itoa(movie.Year))
 
 		/** Replace any documents matching a term.
 		 *

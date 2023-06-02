@@ -7,10 +7,19 @@ import (
 	"xapian.org/xapian"
 )
 
+// https://www.swig.org/Doc4.1/Go.html#Go_adding_additional_code
+type RangeProcessorWrap struct {
+	xapian.NumberRangeProcessor
+}
+
+func (r *RangeProcessorWrap) DirectorInterface() interface{} {
+	return nil
+}
+
 func main() {
 	// ref https://github.com/xiaoyifang/goldendict-ng/blob/cd7e16de4b58105a3efe6985d283211b0890309c/src/ftshelpers.cc#L371
-
-	qs := "description:结束生命"
+	// qs := "description:结束生命 year:1980..2000 id:78"
+	qs := "description:机器人 year:1980..1985 id:78"
 	var offset uint = 0
 	var pagesize uint = 5
 
@@ -18,6 +27,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Set_database
 
 	docNum := db.Get_doccount()
 	log.Printf("docNum=%v", docNum)
@@ -33,10 +44,34 @@ func main() {
 	qp.Set_stemming_strategy(xp)
 	qp.Add_prefix("title", "T")
 	qp.Add_prefix("description", "D")
+	qp.Add_boolean_prefix("id", "Q")
+
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/introduction.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/indexing/index.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/search/index.html
+
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/range_queries.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/facets.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/facets.html
+	// https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/sorting.html
+
+	// https://xapian.org/docs/overview.html
+	// https://github.com/hightman/xunsearch/blob/8b9191daab6209b2d9281e4438b9d652bf53ba08/src/task.cc#L792
+	// NewNumberRangeProcessor ?
+	// https://xapian.org/docs/valueranges.html
+	// https://xapian.org/docs/apidoc/html/classXapian_1_1NumberRangeProcessor.html
+
+	// https://www.swig.org/Doc4.1/Go.html#Go_director_classes
+	// panic: interface conversion: xapian.SwigcptrNumberRangeProcessor is not xapian.RangeProcessor: missing method DirectorInterface
+
+	// rp := xapian.NewRangeProcessor(uint(2), "year:")
+	nrp := xapian.NewNumberRangeProcessor(uint(1), "year:")
+	qp.Add_rangeprocessor(&RangeProcessorWrap{nrp})
 
 	query := qp.Parse_query(qs, uint(xapian.QueryParserFLAG_DEFAULT|xapian.QueryParserFLAG_CJK_NGRAM))
 
-	fmt.Println(query.Serialise(), query.Get_description())
+	log.Printf("query=%v query_desc=%v", query.Serialise(), query.Get_description())
 
 	enquire := xapian.NewEnquire(db)
 	enquire.Set_query(query)
