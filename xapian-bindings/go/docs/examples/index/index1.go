@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
 
@@ -19,6 +20,8 @@ type Movie struct {
 }
 
 func main() {
+	log.SetOutput(os.Stderr)
+
 	// ref https://github.com/xiaoyifang/goldendict-ng/blob/cd7e16de4b58105a3efe6985d283211b0890309c/src/ftshelpers.cc#L238
 
 	// a csv reader to get the values from csv file
@@ -32,8 +35,8 @@ func main() {
 	reader := csv.NewReader(csvfile)
 	reader.Comma = '|'
 	fields, _ := reader.Read()
-	fmt.Println("Fields are ")
-	fmt.Println(fields)
+	log.Println("Fields are ")
+	log.Println(fields)
 	// set up the termgenerator (indexer)
 	termgenerator := xapian.NewTermGenerator()
 
@@ -54,7 +57,7 @@ func main() {
 			Year:        year,
 			Description: fields[3],
 		}
-		fmt.Println("movie=", movie)
+		log.Println("movie=", movie)
 
 		// when we use := go compiler identifies the type , if we use = we need to specfy the type as below
 		var x uint = 1
@@ -62,6 +65,8 @@ func main() {
 		doc := xapian.NewDocument()
 
 		docJSON, _ := json.Marshal(movie)
+		fmt.Printf("%s\n", docJSON)
+
 		// save the source document
 		doc.Set_data(string(docJSON))
 
@@ -74,7 +79,7 @@ func main() {
 		termgenerator.Increase_termpos()
 		termgenerator.Index_text(movie.Description, x, "D")
 
-		fmt.Println("doc data:", doc.Get_data())
+		log.Println("doc data:", doc.Get_data())
 
 		idterm := "Q" + movie.ID
 
@@ -127,7 +132,7 @@ func main() {
 
 		// db.Delete_document(idterm)
 	}
-	fmt.Println("doc count:", db.Get_doccount())
+	log.Println("doc count:", db.Get_doccount())
 
 	db.Commit()
 	// close the database in order the save the Documents

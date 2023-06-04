@@ -94,6 +94,9 @@ func main() {
 		fmt.Println(m.Get_docid(), m.Get_percent(), m.Get_rank(), m.Get_weight())
 		doc := m.Get_document()
 		log.Printf("doc data=%+v", doc.Get_data())
+
+		// pub fn snippet(&mut self, text: &str, length: i32, stem: &mut Stem, flags: i32, hi_start: &str, hi_end: &str, omit: &s
+		log.Printf("snippets: %s", mset.Snippet(doc.Get_data(), int64(80), xapian.NewStem("en"), uint(1|2|2048), "<b>", "</b>", "..."))
 	}
 
 	db.Close()
