@@ -67,7 +67,7 @@ func main() {
 
 	// rp := xapian.NewRangeProcessor(uint(2), "year:")
 	nrp := xapian.NewNumberRangeProcessor(uint(1), "year:")
-	qp.Add_rangeprocessor(&RangeProcessorWrap{nrp})
+	qp.Add_rangeprocessor(nrp.SwigGetRangeProcessor())
 
 	query := qp.Parse_query(qs, uint(xapian.QueryParserFLAG_DEFAULT|xapian.QueryParserFLAG_CJK_NGRAM))
 
