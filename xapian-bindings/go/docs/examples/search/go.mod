@@ -1,6 +1,6 @@
 module xapian-search-demo
 
-go 1.20
+go 1.21
 
 replace xapian.org/xapian => ../../../
 
